@@ -21,10 +21,9 @@ var frequency = "";
 
 $("#addTrainBtn").on("click",function(){
 
-
     name = $("#nameInput").val().trim();
     destination = $("#destinationInput").val().trim();
-    time = $("#timeInput").val().trim();
+    time = $("#trainTimeInput").val().trim();
     frequency = $("#frequencyInput").val().trim();
 
     database.ref().push({
@@ -33,7 +32,40 @@ $("#addTrainBtn").on("click",function(){
         time: time,
         frequency: frequency
     });
+    });
+    
+    database.ref().on("child_added", function(childSnapshot, prevChildKey){
 
+        console.log(childSnapshot.val());
+        
+     var currentTime = moment();
+		
+		var firebaseName = childSnapshot.val().name;
+		var firebaseDestination = childSnapshot.val().destination;
+		var firebaseTime = childSnapshot.val().time;
+        var firebaseFrequency = childSnapshot.val().frequency;
+        
+        var firstTimeConverted = moment(firebaseTime, "HH:mm").subtract(1, "years");
+		
+		var diffTime = currentTime.diff(moment(firstTimeConverted), "minutes");
+      
+        var timeRemainder = diffTime % firebaseFrequency ;
+        
+        var minutes = firebaseFrequency - timeRemainder;
+
+		var nextTrainArrival = currentTime.add(minutes, "minutes"); 
+		
+	
+    
+        
+
+
+        $("#trainTable > tbody").append("<tr><td>" 
+        + firebaseName + "</td><td>"+ 
+        firebaseDestination + "</td><td>" + 
+        firebaseFrequency + " mins" + "</td><td>" + 
+        moment(nextTrainArrival).format("hh:mm") + "</td><td>" + 
+        minutes + "</td></tr>");
 
 	});
 
