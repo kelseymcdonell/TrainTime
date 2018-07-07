@@ -20,11 +20,18 @@ var time = "";
 var frequency = "";
 
 $("#addTrainBtn").on("click",function(){
+    event.preventDefault();
 
     name = $("#nameInput").val().trim();
     destination = $("#destinationInput").val().trim();
-    time = $("#trainTimeInput").val().trim();
+    time = $("#timeInput").val().trim();
     frequency = $("#frequencyInput").val().trim();
+
+      
+    $("#nameInput").val("");
+    $("#destinationInput").val("");
+    $("#timeInput").val("");
+    $("#frequencyInput").val("");
 
     database.ref().push({
         name: name,
@@ -32,6 +39,8 @@ $("#addTrainBtn").on("click",function(){
         time: time,
         frequency: frequency
     });
+    console.log(name);
+   
     });
     
     database.ref().on("child_added", function(childSnapshot, prevChildKey){
@@ -54,11 +63,6 @@ $("#addTrainBtn").on("click",function(){
         var minutes = firebaseFrequency - timeRemainder;
 
 		var nextTrainArrival = currentTime.add(minutes, "minutes"); 
-		
-	
-    
-        
-
 
         $("#trainTable > tbody").append("<tr><td>" 
         + firebaseName + "</td><td>"+ 
@@ -66,7 +70,6 @@ $("#addTrainBtn").on("click",function(){
         firebaseFrequency + " mins" + "</td><td>" + 
         moment(nextTrainArrival).format("hh:mm") + "</td><td>" + 
         minutes + "</td></tr>");
-
 	});
 
 
